@@ -18,7 +18,8 @@ import time
 # Refresh interval to check your status. Give the value in seconds (default is 10 seconds)
 refresh_interval = 10
 
-# MS Teams log path. Make sure to give the path according to your username.
+# MS Teams log path. Microsoft Teams log is named logs.txt by default as of 01/10/2023
+# Make sure to give the path according to your username.
 ms_teams_log = 'C:\\Users\\<your username>\\AppData\\Roaming\\Microsoft\\Teams\\logs.txt'
 
 # Text to search for ongoing call status
@@ -27,14 +28,11 @@ ms_teams_log = 'C:\\Users\\<your username>\\AppData\\Roaming\\Microsoft\\Teams\\
 #   <17396> -- info -- StatusIndicatorStateService: Removing NewActivity (current state: NewActivity -> OnThePhone)
 current_status_text = 'current state:'
 
-
 # Text to search for ongoing call status
 # As of 2023/01/10 - MS Teams log contains lines similar to below which we can use to extract the user's status. We read
 # the whole log and take only the last occurrance of this line to determine if the user in currently in a Teams call/meeting.
 #   <17396> -- event -- eventpdclevel: 2, name: desktop_call_state_change_send, isOngoing: false, AppInfo.Language: en-us,
 ongoing_call_text = 'isOngoing:'
-
-  
 
 def get_status(string_to_read):
     """Return a list of two elements for Microsoft Teams user status and a human-friendly status text relevant to the given string."""
@@ -52,6 +50,7 @@ def get_status(string_to_read):
     #   OnThePhone  -- in a call (not a meeting)
     #   NewActivity  -- some change eg: new message, new like, new mention   
     
+    # We create a human-friendly text from log relevant for each status
     if last_status == 'Available':
         last_status_human_friendly = 'Available'
     elif last_status == 'NewActivity':
@@ -77,7 +76,6 @@ def get_status(string_to_read):
     
     return [last_status, last_status_human_friendly]  
 
-
 def get_last_line_of_given_text(file_to_read, text_to_check):
     """Return last line that contains the given string from the given file."""
     all_lines = []
@@ -99,26 +97,34 @@ def get_last_line_of_given_text(file_to_read, text_to_check):
 
 
 def check_ms_teams_status():
-    """Check Microsoft Teams log to see if a call/meeting is in proress."""
+    """Check Microsoft Teams log to see if a call/meeting is in progress."""
     while True:
     
         # Check last status line to get my current MS Teams Status and get human friendly status from it
         last_status_line = get_last_line_of_given_text(ms_teams_log, current_status_text)
                
         if last_status_line is not None:
-            print ('last status line: ' + last_status_line)
+        
+            # Uncomment below line if you want to print the "last status line" for testing purposes.
+            # print ('last status line: ' + last_status_line)
+            
+            # Get a list of two elements for the user's status using the log line
             status_list = get_status(last_status_line)
                         
             # Check last ongoing line to see if a call is ongoing                
             last_ongoing_line = get_last_line_of_given_text(ms_teams_log, ongoing_call_text)
             
             if last_ongoing_line is not None:
-                print ('last ongoing line: ' + last_ongoing_line)
-                if 'isOngoing: true' not in last_ongoing_line:
-                    print('Not in a meeting/call')
-                    print('Your current status is ' + status_list[0] + ':' + status_list[1])               
-                else:
+                
+                # Uncomment below line and you can print the "last ongoing call line" for testing purposes.
+                # print ('last ongoing line: ' + last_ongoing_line)
+                
+                # When you are in a call/meeting, it will indicate in log as - isOngoing: true
+                if 'isOngoing: true' in last_ongoing_line:
                     print('There is a call in progress...')
+                    print('Your current status is ' + status_list[0] + ':' + status_list[1])
+                else:              
+                    print('Not in a meeting/call')
                     print('Your current status is ' + status_list[0] + ':' + status_list[1])
             else:
                 print('Could not find a line containing your text: ' + ongoing_call_text)
