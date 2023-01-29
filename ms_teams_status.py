@@ -39,16 +39,17 @@ def get_status(string_to_read):
     last_status = string_to_read[string_to_read.find('->')+3 :-3]
     
     # List of statuses 
-    #   Away  -- away
-    #   Offline   -- offline
-    #   Focusing  -- focusing
-    #   Presenting   -- presenting
-    #   InAMeeting  -- in a meeting
-    #   BeRightBack  -- be right back
-    #   DoNotDisturb  -- do not disturb
-    #   Available  -- available (green)
-    #   OnThePhone  -- in a call (not a meeting)
-    #   NewActivity  -- some change eg: new message, new like, new mention   
+    #   Away  -- Away
+    #   Unknown  -- Unknown
+    #   Offline   -- Offline
+    #   Focusing  -- Focusing
+    #   Presenting   -- Presenting
+    #   InAMeeting  -- In a meeting
+    #   BeRightBack  -- Be right back
+    #   DoNotDisturb  -- Do not disturb
+    #   Available  -- Available (green)
+    #   OnThePhone  -- In a call (not a meeting)
+    #   NewActivity  -- Any other change eg: new message, new like, new mention   
     
     # We create a human-friendly text from log relevant for each status
     if last_status == 'Available':
