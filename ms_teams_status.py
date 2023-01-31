@@ -34,6 +34,7 @@ current_status_text = 'current state:'
 #   <17396> -- event -- eventpdclevel: 2, name: desktop_call_state_change_send, isOngoing: false, AppInfo.Language: en-us,
 ongoing_call_text = 'isOngoing:'
 
+
 def get_status(string_to_read):
     """Return a list of two elements for Microsoft Teams user status and a human-friendly status text relevant to the given string."""
     last_status = string_to_read[string_to_read.find('->')+3 :-3]
@@ -76,6 +77,7 @@ def get_status(string_to_read):
         last_status_human_friendly = 'Unknown'
     
     return [last_status, last_status_human_friendly]  
+
 
 def get_last_line_of_given_text(file_to_read, text_to_check):
     """Return last line that contains the given string from the given file."""
@@ -133,6 +135,7 @@ def check_ms_teams_status():
             print('Could not find a line containing your text: ' + current_status_text)
                 
         time.sleep(refresh_interval)
+
     
 if __name__ == "__main__":
     check_ms_teams_status()
