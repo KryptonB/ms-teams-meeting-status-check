@@ -1,4 +1,4 @@
-# Python module for chcking your Microsoft Teams status
+# Python module for checking your Microsoft Teams status
 
 This python script will check if you are in Microsoft Teams meeting/call and also it will print your current status.
 
